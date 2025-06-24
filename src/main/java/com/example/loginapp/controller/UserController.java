@@ -5,6 +5,7 @@ import com.example.loginapp.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import com.example.loginapp.dto.LoginResponseDto;
 
 @RestController
 @RequestMapping("/api/user")
@@ -26,5 +27,15 @@ public class UserController {
         } catch (IllegalArgumentException e) {
             return ResponseEntity.badRequest().body("회원가입 실패: " + e.getMessage());
         }
+    }
+
+    @PostMapping("/signin")
+    public ResponseEntity<?> signin(
+            @RequestParam String email,
+            @RequestParam String passwd) {
+
+        return userService.loginAndReturnUser(email, passwd)
+                .map(ResponseEntity::ok)
+                .orElseGet(() -> ResponseEntity.status(401).body(null));
     }
 }

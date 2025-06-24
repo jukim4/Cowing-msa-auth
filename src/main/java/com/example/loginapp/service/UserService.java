@@ -4,6 +4,8 @@ import com.example.loginapp.entity.UserEntity;
 import com.example.loginapp.repository.UserRepository;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
+import com.example.loginapp.dto.LoginResponseDto;
+import java.util.Optional;
 
 @Service
 public class UserService {
@@ -31,4 +33,16 @@ public class UserService {
         return true;
     }
 
+    // 로그인
+    public boolean login(String email, String rawPassword) {
+        return userRepository.findByEmail(email)
+                .map(user -> passwordEncoder.matches(rawPassword, user.getPasswd()))
+                .orElse(false);
+    }
+
+    public Optional<LoginResponseDto> loginAndReturnUser(String email, String rawPassword) {
+        return userRepository.findByEmail(email)
+                .filter(user -> passwordEncoder.matches(rawPassword, user.getPasswd()))
+                .map(user -> new LoginResponseDto(user.getId(), user.getNickname()));
+    }
 }
