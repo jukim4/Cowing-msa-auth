@@ -13,7 +13,7 @@ public class SecurityConfig {
         http
                 .csrf().disable() // POST 테스트를 위해 임시로 CSRF 끔
                 .authorizeHttpRequests()
-                .requestMatchers("/api/user/register", "/api/user/signin").permitAll()
+                .requestMatchers("/api/user/register", "/api/user/signin", "/api/user/change/password").permitAll()
                 .anyRequest().authenticated()
                 .and()
                 .formLogin().disable(); // 폼 로그인 비활성화

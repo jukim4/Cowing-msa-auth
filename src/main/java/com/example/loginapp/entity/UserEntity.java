@@ -27,4 +27,8 @@ public class UserEntity {
 
     @Column(nullable = false)
     private String nickname;
+
+    public void updatePassword(String newHashedPwd) {
+        this.passwd = newHashedPwd;
+    }
 }

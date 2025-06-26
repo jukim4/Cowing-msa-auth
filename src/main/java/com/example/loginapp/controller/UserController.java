@@ -38,4 +38,19 @@ public class UserController {
                 .map(ResponseEntity::ok)
                 .orElseGet(() -> ResponseEntity.status(401).body(null));
     }
+
+    @PutMapping("/change/password")
+    public ResponseEntity<String> changePassword(
+            @RequestParam String email,
+            @RequestParam String currentPwd,
+            @RequestParam String newPwd) {
+
+        boolean result = userService.updatePassword(email, currentPwd, newPwd);
+
+        if (result) {
+            return ResponseEntity.ok("비밀번호 변경 성공");
+        } else {
+            return ResponseEntity.status(401).body("현재 비밀번호가 일치하지 않거나 사용자 없음");
+        }
+    }
 }
