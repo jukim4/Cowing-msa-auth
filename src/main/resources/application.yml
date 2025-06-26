@@ -1,13 +1,13 @@
 spring:
   datasource:
-    url: jdbc:mariadb://localhost:3306/COWING?characterEncoding=UTF-8&serverTimezone=UTC
-    username: howon
-    password: 1230
+    url: ${DB_URL}
+    username: ${DB_USERNAME}
+    password: ${DB_PASSWORD}
     driver-class-name: org.mariadb.jdbc.Driver
 
   jpa:
     hibernate:
-      ddl-auto: update
+      ddl-auto: create
     properties:
       hibernate:
         format_sql: true

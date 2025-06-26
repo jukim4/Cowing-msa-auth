@@ -6,6 +6,8 @@ import lombok.NoArgsConstructor;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 
+import java.math.BigDecimal;
+
 @Entity
 @Table(name = "user")
 @Getter
@@ -28,7 +30,7 @@ public class UserEntity {
     @Column(nullable = false)
     private String nickname;
 
-    public void updatePassword(String newHashedPwd) {
-        this.passwd = newHashedPwd;
-    }
+    @Column(precision = 20, scale = 8, nullable = false)
+    private BigDecimal uHoldings;
+
 }
