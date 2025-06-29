@@ -5,7 +5,8 @@ import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 
 public record RegisterUserDto(
-                @JsonProperty("email") @NotBlank @Email String email,
-                @JsonProperty("passwd") @NotBlank String passwd,
-                @JsonProperty("nickname") @NotBlank String nickname) {
+        @JsonProperty("email") @NotBlank @Email String email,
+        @JsonProperty("passwd") @NotBlank String passwd,
+        @JsonProperty("nickname") @NotBlank String nickname,
+        @JsonProperty("username") @NotBlank String username) {
 }

@@ -5,6 +5,8 @@ import cowing.auth.repository.UserRepository;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import cowing.auth.dto.LoginResponseDto;
+
+import java.math.BigDecimal;
 import java.util.Optional;
 
 @Service
@@ -19,18 +21,26 @@ public class UserService {
     }
 
     // 회원가입
-    public boolean registerUser(String email, String rawPassword, String nickname) {
-        if (userRepository.existsByEmail(email)) {
-            return false; // 이미 존재하는 이메일이면 실패
+    public boolean registerUser(String email, String rawPassword, String nickname, String username) {
+        try {
+            if (userRepository.existsByEmail(email)) {
+                throw new IllegalArgumentException("이미 존재하는 이메일입니다.");
+            }
+            String hashedPassword = passwordEncoder.encode(rawPassword);
+            UserEntity user = UserEntity.builder()
+                    .email(email)
+                    .passwd(hashedPassword)
+                    .nickname(nickname)
+                    .username(username)
+                    .uHoldings(BigDecimal.ZERO)
+                    .build();
+
+            userRepository.save(user);
+            return true;
+        } catch (Exception e) {
+            System.out.println("회원가입 실패: " + e.getMessage());
+            return false;
         }
-        String hashedPassword = passwordEncoder.encode(rawPassword);
-        UserEntity user = UserEntity.builder()
-                .email(email)
-                .passwd(hashedPassword)
-                .nickname(nickname)
-                .build();
-        userRepository.save(user);
-        return true;
     }
 
     // // 로그인

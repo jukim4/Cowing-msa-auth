@@ -4,9 +4,17 @@ import cowing.auth.dto.RegisterUserDto;
 import cowing.auth.entity.UserEntity;
 import cowing.auth.service.UserService;
 import lombok.RequiredArgsConstructor;
+
+import java.util.HashMap;
+
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-// import cowing.auth.dto.LoginResponseDto;
+
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+
+import java.util.HashMap;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/api/v1")
@@ -17,12 +25,15 @@ public class UserController {
 
     // 회원가입
     @PostMapping("/signup")
-    public ResponseEntity<String> register(@RequestBody RegisterUserDto dto) {
-        try {
-            userService.registerUser(dto.email(), dto.passwd(), dto.nickname());
-            return ResponseEntity.ok("회원가입 성공");
-        } catch (IllegalArgumentException e) {
-            return ResponseEntity.badRequest().body("회원가입 실패: " + e.getMessage());
+    public ResponseEntity<?> register(@RequestBody RegisterUserDto dto) {
+        boolean result = userService.registerUser(dto.email(), dto.passwd(), dto.nickname(), dto.username());
+        if (result) {
+            Map<String, Object> response = new HashMap<>();
+            response.put("code", 201);
+            response.put("message", "회원가입에 성공하였습니다. 축하드립니다!");
+            return ResponseEntity.status(201).body(response);
+        } else {
+            return ResponseEntity.badRequest().body("회원가입 실패");
         }
     }
 

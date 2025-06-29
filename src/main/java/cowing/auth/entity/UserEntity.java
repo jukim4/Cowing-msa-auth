@@ -1,10 +1,7 @@
 package cowing.auth.entity;
 
 import jakarta.persistence.*;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
+import lombok.*;
 
 import java.math.BigDecimal;
 
@@ -25,7 +22,10 @@ public class UserEntity {
     private String email;
 
     @Column(nullable = false)
-    private String passwd; // 해시된 비밀번호
+    private String username;
+
+    @Column(nullable = false)
+    private String passwd;
 
     @Column(nullable = false)
     private String nickname;
@@ -33,4 +33,7 @@ public class UserEntity {
     @Column(precision = 20, scale = 8, nullable = true)
     private BigDecimal uHoldings;
 
+    public void updatePassword(String newPasswd) {
+        this.passwd = newPasswd;
+    }
 }
