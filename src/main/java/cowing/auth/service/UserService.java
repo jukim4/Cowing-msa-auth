@@ -1,6 +1,6 @@
 package cowing.auth.service;
 
-import cowing.auth.entity.UserEntity;
+import cowing.auth.entity.User;
 import cowing.auth.repository.UserRepository;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -27,7 +27,7 @@ public class UserService {
                 throw new IllegalArgumentException("이미 존재하는 이메일입니다.");
             }
             String hashedPassword = passwordEncoder.encode(rawPassword);
-            UserEntity user = UserEntity.builder()
+            User user = User.builder()
                     .email(email)
                     .passwd(hashedPassword)
                     .nickname(nickname)

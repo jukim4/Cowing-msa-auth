@@ -1,7 +1,7 @@
 package cowing.auth.controller;
 
 import cowing.auth.dto.RegisterUserDto;
-import cowing.auth.entity.UserEntity;
+import cowing.auth.entity.User;
 import cowing.auth.service.UserService;
 import lombok.RequiredArgsConstructor;
 
