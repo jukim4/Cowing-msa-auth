@@ -43,32 +43,22 @@ public class UserService {
         }
     }
 
-    // // 로그인
-    // public boolean login(String email, String rawPassword) {
-    // return userRepository.findByEmail(email)
-    // .map(user -> passwordEncoder.matches(rawPassword, user.getPasswd()))
-    // .orElse(false);
-    // }
+    // 비밀번호 변경
+    public boolean updatePassword(String email, String currentPwd, String newPwd) {
+        Optional<User> optionalUser = userRepository.findByEmail(email);
 
-    // // 로그인 user_id / nickname 리턴
-    // public Optional<LoginResponseDto> loginAndReturnUser(String email, String
-    // rawPassword) {
-    // return userRepository.findByEmail(email)
-    // .filter(user -> passwordEncoder.matches(rawPassword, user.getPasswd()))
-    // .map(user -> new LoginResponseDto(user.getId(), user.getNickname()));
-    // }
+        if (optionalUser.isEmpty())
+            return false;
 
-    // // 비밀번호 변경
-    // public boolean updatePassword(String email, String currentPwd, String newPwd)
-    // {
-    // return userRepository.findByEmail(email)
-    // .filter(user -> passwordEncoder.matches(currentPwd, user.getPasswd()))
-    // .map(user -> {
-    // String hashedNewPwd = passwordEncoder.encode(newPwd);
-    // user.updatePassword(hashedNewPwd);
-    // userRepository.save(user);
-    // return true;
-    // })
-    // .orElse(false);
-    // }
+        User user = optionalUser.get();
+
+        if (!passwordEncoder.matches(currentPwd, user.getPasswd())) {
+            return false;
+        }
+
+        String hashedNewPwd = passwordEncoder.encode(newPwd);
+        user.setPasswd(hashedNewPwd);
+        userRepository.save(user);
+        return true;
+    }
 }

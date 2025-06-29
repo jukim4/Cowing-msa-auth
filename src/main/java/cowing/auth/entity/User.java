@@ -36,4 +36,9 @@ public class User {
     public void updatePassword(String newPasswd) {
         this.passwd = newPasswd;
     }
+
+    public void setPasswd(String passwd) {
+        this.passwd = passwd;
+    }
+
 }

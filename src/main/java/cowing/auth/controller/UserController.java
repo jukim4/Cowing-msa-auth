@@ -1,5 +1,6 @@
 package cowing.auth.controller;
 
+import cowing.auth.dto.PasswordChangeDto;
 import cowing.auth.dto.RegisterUserDto;
 import cowing.auth.entity.User;
 import cowing.auth.service.UserService;
@@ -37,28 +38,20 @@ public class UserController {
         }
     }
 
-    // @PostMapping("/signin")
-    // public ResponseEntity<?> signin(
-    // @RequestParam String email,
-    // @RequestParam String passwd) {
-
-    // return userService.loginAndReturnUser(email, passwd)
-    // .map(ResponseEntity::ok)
-    // .orElseGet(() -> ResponseEntity.status(401).body(null));
-    // }
-
-    // @PutMapping("/change/password")
-    // public ResponseEntity<String> changePassword(
-    // @RequestParam String email,
-    // @RequestParam String currentPwd,
-    // @RequestParam String newPwd) {
-
-    // boolean result = userService.updatePassword(email, currentPwd, newPwd);
-
-    // if (result) {
-    // return ResponseEntity.ok("비밀번호 변경 성공");
-    // } else {
-    // return ResponseEntity.status(401).body("현재 비밀번호가 일치하지 않거나 사용자 없음");
-    // }
-    // }
+    // 비밀번호 변경
+    @PostMapping("/change/passwd")
+    public ResponseEntity<?> changePassword(@RequestBody PasswordChangeDto dto) {
+        boolean result = userService.updatePassword(dto.email(), dto.currentPwd(), dto.newPwd());
+        if (result) {
+            Map<String, Object> response = new HashMap<>();
+            response.put("code", 201);
+            response.put("message", "비밀번호가 변경되었습니다!");
+            return ResponseEntity.status(201).body(response);
+        } else {
+            Map<String, Object> response = new HashMap<>();
+            response.put("code", 400);
+            response.put("message", "현재 비밀번호 혹은 이메일이 잘못되었습니다.");
+            return ResponseEntity.status(400).body(response);
+        }
+    }
 }
