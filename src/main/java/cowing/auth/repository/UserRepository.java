@@ -1,6 +1,6 @@
-package com.example.loginapp.repository;
+package cowing.auth.repository;
 
-import com.example.loginapp.entity.UserEntity;
+import cowing.auth.entity.UserEntity;
 import org.springframework.data.jpa.repository.JpaRepository;
 import java.util.Optional;
 

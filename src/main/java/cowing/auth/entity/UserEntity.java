@@ -1,4 +1,4 @@
-package com.example.loginapp.entity;
+package cowing.auth.entity;
 
 import jakarta.persistence.*;
 import lombok.Getter;
@@ -30,7 +30,7 @@ public class UserEntity {
     @Column(nullable = false)
     private String nickname;
 
-    @Column(precision = 20, scale = 8, nullable = false)
+    @Column(precision = 20, scale = 8, nullable = true)
     private BigDecimal uHoldings;
 
 }
