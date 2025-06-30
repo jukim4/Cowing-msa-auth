@@ -30,11 +30,15 @@ public class User {
     @Column(nullable = false)
     private String nickname;
 
+    @Column(nullable = false)
+    private Authority authority;
+
     @Column(precision = 20, scale = 8, nullable = true)
     private BigDecimal uHoldings;
 
-    public void updatePassword(String newPasswd) {
-        this.passwd = newPasswd;
+    @PrePersist
+    public void prePersist() {
+            this.authority = Authority.ROLE_USER; // 기본 권한 설정
     }
 
     public void setPasswd(String passwd) {

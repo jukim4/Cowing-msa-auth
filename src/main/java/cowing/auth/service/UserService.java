@@ -4,7 +4,7 @@ import cowing.auth.entity.User;
 import cowing.auth.repository.UserRepository;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
-import cowing.auth.dto.LoginResponseDto;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
 import java.util.Optional;
@@ -20,7 +20,7 @@ public class UserService {
         this.passwordEncoder = new BCryptPasswordEncoder();
     }
 
-    // 회원가입
+    @Transactional
     public boolean registerUser(String email, String rawPassword, String nickname, String username) {
         try {
             if (userRepository.existsByEmail(email)) {
@@ -43,7 +43,7 @@ public class UserService {
         }
     }
 
-    // 비밀번호 변경
+    @Transactional
     public boolean updatePassword(String email, String currentPwd, String newPwd) {
         Optional<User> optionalUser = userRepository.findByEmail(email);
 
