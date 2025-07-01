@@ -67,4 +67,24 @@ public class UserService {
         userRepository.save(user);
         return true;
     }
+
+    @Transactional
+    public List<PortfolioDto> getPortfolio(String username) {
+        return portfolioRepository.findByUsername(username).stream()
+                .map(p -> new PortfolioDto(
+                        p.getUsername(),
+                        p.getQuantity(),
+                        p.getAverageCost().intValue()
+                ))
+                .toList();
+
+    }
+
+    @Transactional
+    public Long getUserAsset(String username) {
+        User user = userRepository.findByUsername(username)
+                .orElseThrow(() -> new RuntimeException("사용자를 찾을 수 없습니다."));
+        return user.getUHoldings();
+    }
+
 }
