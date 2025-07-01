@@ -1,7 +1,9 @@
 package cowing.auth.controller;
 
 import cowing.auth.dto.PasswordChangeDto;
+import cowing.auth.dto.PortfolioDto;
 import cowing.auth.dto.RegisterUserDto;
+import cowing.auth.entity.PrincipalDetails;
 import cowing.auth.entity.User;
 import cowing.auth.service.UserService;
 import lombok.RequiredArgsConstructor;
@@ -9,12 +11,14 @@ import lombok.RequiredArgsConstructor;
 import java.util.HashMap;
 
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 @RestController
@@ -54,4 +58,37 @@ public class UserController {
             return ResponseEntity.status(400).body(response);
         }
     }
+
+    // 유저 포트폴리오 조회
+    @GetMapping("/portfolio")
+    public ResponseEntity<?> getPortfolio(@AuthenticationPrincipal PrincipalDetails principal) {
+        String username = principal.getUsername();
+        List<PortfolioDto> portfolios = userService.getPortfolio(username);
+
+        Map<String, Object> response = new HashMap<>();
+        response.put("code", 200);
+        if (!portfolios.isEmpty()) {
+            response.put("message", "포트폴리오 조회 성공");
+        } else {
+            response.put("message", "포트폴리오가 존재하지 않습니다.");
+        }
+        response.put("data", portfolios);
+        return ResponseEntity.ok(response);
+    }
+
+    @GetMapping("/asset")
+    public ResponseEntity<?> getKRWHoldings(@AuthenticationPrincipal PrincipalDetails principal) {
+        String username = principal.getUsername();
+
+        Long asset = userService.getUserAsset(username);
+
+        Map<String, Object> response = new HashMap<>();
+        response.put("code", 200);
+        response.put("message", "원화 자산 조회 성공");
+        response.put("asset", asset);
+
+        return ResponseEntity.ok(response);
+    }
+
+
 }
