@@ -34,7 +34,7 @@ public class User {
     private Authority authority;
 
     @Column(precision = 20, scale = 8, nullable = true)
-    private BigDecimal uHoldings;
+    private Long uHoldings;
 
     @PrePersist
     public void prePersist() {
