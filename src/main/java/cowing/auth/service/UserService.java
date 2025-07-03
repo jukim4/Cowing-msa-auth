@@ -1,6 +1,7 @@
 package cowing.auth.service;
 
 import cowing.auth.dto.PortfolioDto;
+import cowing.auth.dto.UserInfoDto;
 import cowing.auth.entity.Portfolio;
 import cowing.auth.entity.User;
 import cowing.auth.repository.PortfolioRepository;
@@ -85,6 +86,17 @@ public class UserService {
         User user = userRepository.findByUsername(username)
                 .orElseThrow(() -> new RuntimeException("사용자를 찾을 수 없습니다."));
         return user.getUHoldings();
+    }
+
+    @Transactional(readOnly = true)
+    public UserInfoDto getUserInfo(String username) {
+        User user = userRepository.findByUsername(username)
+                .orElseThrow(() -> new RuntimeException("사용자를 찾을 수 없습니다."));
+        return new UserInfoDto(
+                user.getNickname(),
+                user.getEmail(),
+                user.getUsername()
+        );
     }
 
 }
