@@ -3,6 +3,7 @@ package cowing.auth.controller;
 import cowing.auth.dto.PasswordChangeDto;
 import cowing.auth.dto.PortfolioDto;
 import cowing.auth.dto.RegisterUserDto;
+import cowing.auth.dto.UserInfoDto;
 import cowing.auth.entity.PrincipalDetails;
 import cowing.auth.entity.User;
 import cowing.auth.service.UserService;
@@ -90,5 +91,12 @@ public class UserController {
         return ResponseEntity.ok(response);
     }
 
+    @GetMapping("/infos")
+    public ResponseEntity<?> getUserInfo(@AuthenticationPrincipal PrincipalDetails principal) {
+        String username = principal.getUsername();
+        UserInfoDto userInfo = userService.getUserInfo(username);
+
+        return ResponseEntity.ok(userInfo);
+    }
 
 }
