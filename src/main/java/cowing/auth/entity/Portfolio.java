@@ -28,4 +28,7 @@ public class Portfolio {
 
     @Column(name = "average_cost", nullable = false)
     private Long averageCost;
+
+    @Column(name = "total_cost", nullable = false)
+    private Long totalCost;
 }
