@@ -9,5 +9,6 @@ import java.math.BigDecimal;
 public record PortfolioDto(
         @JsonProperty("name") @NotBlank String name,
         @JsonProperty("quantity")  @NotNull BigDecimal quantity,
-        @JsonProperty("average_cost")  @NotNull Long averageCost) {
+        @JsonProperty("average_cost")  @NotNull Long averageCost,
+        @JsonProperty("total_cost")  @NotNull Long totalCost) {
 }
