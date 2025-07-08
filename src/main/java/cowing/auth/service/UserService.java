@@ -73,7 +73,7 @@ public class UserService {
     public List<PortfolioDto> getPortfolio(String username) {
         return portfolioRepository.findByUsername(username).stream()
                 .map(p -> new PortfolioDto(
-                        p.getUsername(),
+                        p.getMarketCode(),
                         p.getQuantity(),
                         p.getAverageCost()
                 ))
