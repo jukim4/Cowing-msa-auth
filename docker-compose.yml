@@ -19,11 +19,10 @@ services:
       retries: 10
       interval: 30s
 
-
-
   redis:
     image: redis:alpine
     container_name: trade-redis
+    command: redis-server --requirepass 1234
     ports:
       - "6379:6379"
     networks:
@@ -41,6 +40,7 @@ services:
       DB_PASSWORD: 1234
       REDIS_HOST: redis
       REDIS_PORT: 6379
+      REDIS_PASSWORD: 1234
       JWT_SECRET: cf4de7f9512ed483a8b3d7cd02b896e655c79c5b7666dbdb5e91a405628f4304
       ACCESS_TOKEN_EXPIRE: 86400000
       REFRESH_TOKEN_EXPIRE: 172800000
