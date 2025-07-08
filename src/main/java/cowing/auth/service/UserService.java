@@ -75,7 +75,8 @@ public class UserService {
                 .map(p -> new PortfolioDto(
                         p.getMarketCode(),
                         p.getQuantity(),
-                        p.getAverageCost()
+                        p.getAverageCost(),
+                        p.getTotalCost()
                 ))
                 .toList();
 
