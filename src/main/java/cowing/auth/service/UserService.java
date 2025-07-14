@@ -30,9 +30,7 @@ public class UserService {
     @Transactional
     public boolean registerUser(String email, String rawPassword, String nickname, String username) {
         try {
-            if (userRepository.existsByEmail(email)) {
-                throw new IllegalArgumentException("이미 존재하는 이메일입니다.");
-            }
+            validateUser(email, username);
             String hashedPassword = passwordEncoder.encode(rawPassword);
             User user = User.builder()
                     .email(email)
@@ -41,12 +39,20 @@ public class UserService {
                     .username(username)
                     .uHoldings(10000000L)
                     .build();
-
             userRepository.save(user);
             return true;
         } catch (Exception e) {
             System.out.println("회원가입 실패: " + e.getMessage());
             return false;
+        }
+    }
+
+    private void validateUser(String email, String username) {
+        if (userRepository.existsByUsername(username)) {
+            throw new IllegalArgumentException("이미 존재하는 아이디입니다.");
+        }
+        if (userRepository.existsByEmail(email)) {
+            throw new IllegalArgumentException("이미 존재하는 이메일입니다.");
         }
     }
 
