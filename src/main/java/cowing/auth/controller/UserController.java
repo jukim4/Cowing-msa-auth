@@ -7,6 +7,8 @@ import cowing.auth.dto.UserInfoDto;
 import cowing.auth.entity.PrincipalDetails;
 import cowing.auth.entity.User;
 import cowing.auth.service.UserService;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import lombok.RequiredArgsConstructor;
 
 import java.util.HashMap;
@@ -30,6 +32,9 @@ public class UserController {
     private final UserService userService;
 
     // 회원가입
+    @Operation(summary = "회원가입", description = "이메일, 비밀번호, 닉네임, 유저명을 입력하여 회원가입")
+    @ApiResponse(responseCode = "201", description = "회원가입 성공")
+    @ApiResponse(responseCode = "400", description = "회원가입 실패")
     @PostMapping("/signup")
     public ResponseEntity<?> register(@RequestBody RegisterUserDto dto) {
         boolean result = userService.registerUser(dto.email(), dto.passwd(), dto.nickname(), dto.username());
@@ -44,6 +49,9 @@ public class UserController {
     }
 
     // 비밀번호 변경
+    @Operation(summary = "비밀번호 변경", description = "이메일과 현재 비밀번호를 확인하여 비밀번호 변경")
+    @ApiResponse(responseCode = "201", description = "비밀번호 변경 성공")
+    @ApiResponse(responseCode = "400", description = "현재 비밀번호 혹은 이메일 오입력으로 실패")
     @PostMapping("/change/passwd")
     public ResponseEntity<?> changePassword(@RequestBody PasswordChangeDto dto) {
         boolean result = userService.updatePassword(dto.email(), dto.currentPwd(), dto.newPwd());
@@ -61,6 +69,8 @@ public class UserController {
     }
 
     // 유저 포트폴리오 조회
+    @Operation(summary = "포트폴리오 조회", description = "로그인된 유저의 포트폴리오 조회")
+    @ApiResponse(responseCode = "200", description = "포트폴리오 조회 성공, 아직 거래내역 없을 시 존재하지 않는다는 메세지와 빈 배열 전달")
     @GetMapping("/portfolio")
     public ResponseEntity<?> getPortfolio(@AuthenticationPrincipal PrincipalDetails principal) {
         String username = principal.getUsername();
@@ -77,6 +87,8 @@ public class UserController {
         return ResponseEntity.ok(response);
     }
 
+    @Operation(summary = "원화 자산 조회", description = "로그인된 유저의 원화(KRW) 자산 조회")
+    @ApiResponse(responseCode = "200", description = "원화 자산 조회 성공")
     @GetMapping("/asset")
     public ResponseEntity<?> getKRWHoldings(@AuthenticationPrincipal PrincipalDetails principal) {
         String username = principal.getUsername();
@@ -90,7 +102,8 @@ public class UserController {
 
         return ResponseEntity.ok(response);
     }
-
+    @Operation(summary = "유저 정보 조회", description = "로그인된 유저의 기본 정보 조회")
+    @ApiResponse(responseCode = "200", description = "유저 정보 조회 성공")
     @GetMapping("/infos")
     public ResponseEntity<?> getUserInfo(@AuthenticationPrincipal PrincipalDetails principal) {
         String username = principal.getUsername();
