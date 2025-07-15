@@ -23,7 +23,7 @@ public class Portfolio {
     @Column(name = "market_code", nullable = false)
     private String marketCode;
 
-    @Column(name = "quantity", nullable = false)
+    @Column(name = "quantity", nullable = false, precision = 20, scale = 8)
     private BigDecimal quantity;
 
     @Column(name = "average_cost", nullable = false)
