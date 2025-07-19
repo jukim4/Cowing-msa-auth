@@ -75,6 +75,17 @@ public class UserService {
         return true;
     }
 
+    @Transactional
+    public boolean updateNickname(String username, String nickname) {
+        Optional<User> optionalUser = userRepository.findByUsername(username);
+        if(optionalUser.isEmpty())
+            return false;
+
+        User user = optionalUser.get();
+        user.setNickname(nickname);
+        return true;
+    }
+
     @Transactional(readOnly = true)
     public List<PortfolioDto> getPortfolio(String username) {
         return portfolioRepository.findByUsername(username).stream()
