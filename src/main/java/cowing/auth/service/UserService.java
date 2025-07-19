@@ -88,7 +88,23 @@ public class UserService {
 
     @Transactional(readOnly = true)
     public List<PortfolioDto> getPortfolio(String username) {
-        return portfolioRepository.findByUsername(username).stream()
+        Optional<User> optionalUser = userRepository.findByUsername(username);
+
+        if (optionalUser.isEmpty()) {
+            throw new RuntimeException("사용자를 찾을 수 없습니다.");
+        }
+
+        LocalDateTime bankruptAt = optionalUser.get().getBankruptAt();
+
+
+        List<Portfolio> portfolios;
+        if (bankruptAt == null) {
+            portfolios = portfolioRepository.findByUsername(username);
+        } else {
+            portfolios = portfolioRepository.findByUsernameAndCreatedAtAfter(username, bankruptAt);
+        }
+
+        return portfolios.stream()
                 .map(p -> new PortfolioDto(
                         p.getMarketCode(),
                         p.getQuantity(),
