@@ -11,6 +11,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
@@ -131,6 +132,21 @@ public class UserService {
                 user.getEmail(),
                 user.getUsername()
         );
+    }
+
+    @Transactional
+    public void deleteUser(String username) {
+        User user = userRepository.findByUsername(username)
+                .orElseThrow(()-> new RuntimeException("사용자를 찾을 수 없습니다."));
+        user.markAsDeleted();
+    }
+
+    @Transactional
+    public void bankrupt(String username) {
+        User user = userRepository.findByUsername(username)
+                .orElseThrow(()-> new RuntimeException("사용자를 찾을 수 없습니다."));
+        user.markAsBankrupt();
+        user.setUHoldings(10000000L);
     }
 
 }
