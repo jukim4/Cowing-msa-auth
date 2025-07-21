@@ -11,6 +11,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
@@ -75,9 +76,31 @@ public class UserService {
         return true;
     }
 
+    @Transactional
+    public void updateNickname(String username, String nickname) {
+        User user = userRepository.findByUsername(username)
+                .orElseThrow(() -> new RuntimeException("사용자를 찾을 수 없습니다."));
+
+        user.setNickname(nickname);
+        userRepository.save(user);
+    }
+
     @Transactional(readOnly = true)
     public List<PortfolioDto> getPortfolio(String username) {
-        return portfolioRepository.findByUsername(username).stream()
+        User user = userRepository.findByUsername(username)
+                .orElseThrow(() -> new RuntimeException("사용자를 찾을 수 없습니다."));
+
+        LocalDateTime bankruptAt = user.getBankruptAt();
+
+
+        List<Portfolio> portfolios;
+        if (bankruptAt == null) {
+            portfolios = portfolioRepository.findByUsername(username);
+        } else {
+            portfolios = portfolioRepository.findByUsernameAndCreatedAtAfter(username, bankruptAt);
+        }
+
+        return portfolios.stream()
                 .map(p -> new PortfolioDto(
                         p.getMarketCode(),
                         p.getQuantity(),
@@ -104,6 +127,23 @@ public class UserService {
                 user.getEmail(),
                 user.getUsername()
         );
+    }
+
+    @Transactional
+    public void markAsDeletedUser(String username) {
+        User user = userRepository.findByUsername(username)
+                .orElseThrow(()-> new RuntimeException("사용자를 찾을 수 없습니다."));
+        user.markAsDeleted();
+        userRepository.save(user);
+    }
+
+    @Transactional
+    public void bankrupt(String username) {
+        User user = userRepository.findByUsername(username)
+                .orElseThrow(()-> new RuntimeException("사용자를 찾을 수 없습니다."));
+        user.markAsBankrupt();
+        user.setUHoldings(10000000L);
+        userRepository.save(user);
     }
 
 }
