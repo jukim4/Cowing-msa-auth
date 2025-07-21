@@ -50,17 +50,19 @@ public class UserController {
     @ApiResponse(responseCode = "201", description = "비밀번호 변경 성공")
     @ApiResponse(responseCode = "400", description = "현재 비밀번호 혹은 이메일 오입력으로 실패")
     @PostMapping("/change/passwd")
-    public ResponseEntity<?> changePassword(@RequestBody PasswordChangeDto dto) {
-        boolean result = userService.updatePassword(dto.email(), dto.currentPwd(), dto.newPwd());
-        if (result) {
+    public ResponseEntity<?> changePassword(@AuthenticationPrincipal PrincipalDetails principal, @RequestBody PasswordChangeDto dto) {
+        try {
+            userService.updatePassword(principal.getUsername(), dto.currentPwd(), dto.newPwd());
+
             Map<String, Object> response = new HashMap<>();
             response.put("code", 201);
             response.put("message", "비밀번호가 변경되었습니다!");
             return ResponseEntity.status(201).body(response);
-        } else {
+
+        } catch (RuntimeException e) {
             Map<String, Object> response = new HashMap<>();
             response.put("code", 400);
-            response.put("message", "현재 비밀번호 혹은 이메일이 잘못되었습니다.");
+            response.put("message", "비밀번호 변경에 실패했습니다: " + e.getMessage());
             return ResponseEntity.status(400).body(response);
         }
     }
