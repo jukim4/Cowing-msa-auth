@@ -65,21 +65,23 @@ public class UserController {
         }
     }
 
-    @Operation(summary = "비밀번호 변경", description = "이메일로 유저 조회해서 닉네임 변경")
+    @Operation(summary = "닉네임 변경", description = "이메일로 유저 조회해서 닉네임 변경")
     @ApiResponse(responseCode = "201", description = "닉네임 변경 성공")
     @ApiResponse(responseCode = "400", description = "닉네임 변경 실패")
     @PostMapping("/change/nickname")
     public ResponseEntity<?> changeNickname(@AuthenticationPrincipal PrincipalDetails principal, @RequestBody NicknameChangeDto dto) {
-        boolean result = userService.updateNickname(principal.getUsername(), dto.nickname());
-        if (result) {
+        try {
+            userService.updateNickname(principal.getUsername(), dto.nickname());
+
             Map<String, Object> response = new HashMap<>();
             response.put("code", 201);
             response.put("message", "닉네임이 변경되었습니다!");
             return ResponseEntity.status(201).body(response);
-        } else {
+
+        } catch (RuntimeException e) {
             Map<String, Object> response = new HashMap<>();
             response.put("code", 400);
-            response.put("message", "닉네임 변경에 실패했습니다");
+            response.put("message", "닉네임 변경에 실패했습니다: " + e.getMessage());
             return ResponseEntity.status(400).body(response);
         }
     }
@@ -133,11 +135,11 @@ public class UserController {
     @PostMapping("/deletion")
     public ResponseEntity<?> deleteUser(@AuthenticationPrincipal PrincipalDetails principal) {
         String username = principal.getUsername();
-        userService.deleteUser(username);
+        userService.markAsDeletedUser(username);
 
         Map<String, Object> response = new HashMap<>();
         response.put("code", 200);
-        response.put("message", "계정이 성공적으로 삭제되었습니다.");
+        response.put("message", "탈퇴 처리 되었습니다.");
 
         return ResponseEntity.ok(response);
     }
