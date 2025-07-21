@@ -77,25 +77,20 @@ public class UserService {
     }
 
     @Transactional
-    public boolean updateNickname(String username, String nickname) {
-        Optional<User> optionalUser = userRepository.findByUsername(username);
-        if(optionalUser.isEmpty())
-            return false;
+    public void updateNickname(String username, String nickname) {
+        User user = userRepository.findByUsername(username)
+                .orElseThrow(() -> new RuntimeException("사용자를 찾을 수 없습니다."));
 
-        User user = optionalUser.get();
         user.setNickname(nickname);
-        return true;
+        userRepository.save(user);
     }
 
     @Transactional(readOnly = true)
     public List<PortfolioDto> getPortfolio(String username) {
-        Optional<User> optionalUser = userRepository.findByUsername(username);
+        User user = userRepository.findByUsername(username)
+                .orElseThrow(() -> new RuntimeException("사용자를 찾을 수 없습니다."));
 
-        if (optionalUser.isEmpty()) {
-            throw new RuntimeException("사용자를 찾을 수 없습니다.");
-        }
-
-        LocalDateTime bankruptAt = optionalUser.get().getBankruptAt();
+        LocalDateTime bankruptAt = user.getBankruptAt();
 
 
         List<Portfolio> portfolios;
@@ -135,10 +130,11 @@ public class UserService {
     }
 
     @Transactional
-    public void deleteUser(String username) {
+    public void markAsDeletedUser(String username) {
         User user = userRepository.findByUsername(username)
                 .orElseThrow(()-> new RuntimeException("사용자를 찾을 수 없습니다."));
         user.markAsDeleted();
+        userRepository.save(user);
     }
 
     @Transactional
@@ -147,6 +143,7 @@ public class UserService {
                 .orElseThrow(()-> new RuntimeException("사용자를 찾을 수 없습니다."));
         user.markAsBankrupt();
         user.setUHoldings(10000000L);
+        userRepository.save(user);
     }
 
 }
