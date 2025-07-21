@@ -58,22 +58,16 @@ public class UserService {
     }
 
     @Transactional
-    public boolean updatePassword(String email, String currentPwd, String newPwd) {
-        Optional<User> optionalUser = userRepository.findByEmail(email);
-
-        if (optionalUser.isEmpty())
-            return false;
-
-        User user = optionalUser.get();
+    public void updatePassword(String username, String currentPwd, String newPwd) {
+        User user = userRepository.findByUsername(username)
+                .orElseThrow(() -> new RuntimeException("사용자를 찾을 수 없습니다."));
 
         if (!passwordEncoder.matches(currentPwd, user.getPasswd())) {
-            return false;
+            throw new IllegalArgumentException("현재 비밀번호가 일치하지 않습니다.");
         }
-
         String hashedNewPwd = passwordEncoder.encode(newPwd);
         user.setPasswd(hashedNewPwd);
         userRepository.save(user);
-        return true;
     }
 
     @Transactional
