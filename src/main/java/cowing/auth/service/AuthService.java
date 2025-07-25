@@ -34,6 +34,7 @@ public class AuthService {
     private final UserRepository userRepository;
     private final RedisTemplate<String, String> redisTemplate;
 
+    // 로그인
     @Transactional
     public TokenDto login(LoginReqDto loginReqDto) {
         try {
@@ -59,6 +60,7 @@ public class AuthService {
         }
     }
 
+    // 토큰 재발급
     @Transactional
     public TokenDto refresh(HttpServletRequest request) throws RefreshTokenInvalidException {
         String refreshToken = request.getHeader("Authorization").substring(7);
