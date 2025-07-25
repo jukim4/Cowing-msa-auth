@@ -30,7 +30,6 @@ public class AuthService {
 
     private final AuthenticationManagerBuilder authenticationManagerBuilder;
     private final TokenProvider tokenProvider;
-    private final JwtRedis jwtRedis;
     private final UserRepository userRepository;
     private final RedisTemplate<String, String> redisTemplate;
 
