@@ -1,21 +1,31 @@
-FROM gradle:8.14.2-jdk21 AS build
+FROM gradle:8.14.3-jdk21-alpine AS build
 
 WORKDIR /app
 
-COPY gradlew .
-COPY gradle ./gradle
-COPY build.gradle .
-COPY settings.gradle .
+COPY build.gradle settings.gradle ./
+RUN gradle dependencies --no-daemon -x test
+
 COPY src ./src
+RUN gradle bootJar --no-daemon -x test
 
-RUN ./gradlew build -x test --no-daemon
+RUN java -Djarmode=tools -jar build/libs/*.jar extract --layers --launcher --destination trading-app
 
-FROM amazoncorretto:21.0.7-alpine3.19
+FROM eclipse-temurin:21-jre-alpine-3.20
+
+ARG ID=1001
+RUN addgroup --gid ${ID} javauser && \
+    adduser --uid ${ID} --ingroup javauser --no-create-home --disabled-password javauser
 
 WORKDIR /app
 
-COPY --from=build /app/build/libs/*.jar /app.jar
+ARG LAYERED_JAR=/app/trading-app
+COPY --from=build ${LAYERED_JAR}/dependencies/ ./
+COPY --from=build ${LAYERED_JAR}/spring-boot-loader/ ./
+COPY --from=build ${LAYERED_JAR}/snapshot-dependencies/ ./
+COPY --from=build ${LAYERED_JAR}/application/ ./
 
 EXPOSE 8080
 
-ENTRYPOINT ["java", "-Dspring.profiles.active=prod", "-jar", "/app.jar"]
+USER javauser
+
+ENTRYPOINT ["java", "-Dspring.profiles.active=prod", "org.springframework.boot.loader.launch.JarLauncher"]
