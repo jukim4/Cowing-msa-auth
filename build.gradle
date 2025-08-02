@@ -19,6 +19,12 @@ configurations {
 	}
 }
 
+bootJar {
+	layered {
+		enabled = true
+	}
+}
+
 repositories {
 	mavenCentral()
 }
